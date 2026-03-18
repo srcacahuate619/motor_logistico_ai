@@ -2,38 +2,31 @@ import os
 import json
 import logging
 from typing import List, Dict, Optional
-from dotenv import load_dotenv
 import anthropic
 from pydantic import BaseModel, ValidationError
-#CONFIGURACIÓN DE LOGGING PARA PRODUCCIÓN
-# En producción no usamos print(). Usamos logs que guardan la hora y el nivel de gravedad.
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger("ClaudeService")
+
 # Soporta Streamlit Cloud (st.secrets) y local (.env)
 try:
     import streamlit as st
     API_KEY = st.secrets.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
 except Exception:
-    from dotenv import load_dotenv
-    load_dotenv()
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
     API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 if not API_KEY:
     logger.error("CRÍTICO: No se encontró ANTHROPIC_API_KEY.")
     raise ValueError("Falta ANTHROPIC_API_KEY en st.secrets o en .env")
 
-client = anthropic.Anthropic(api_key=API_KEY)
-#CARGA DE VARIABLES DE ENTORNO
-#Esto lee el archivo .env de forma segura
-load_dotenv()
-API_KEY = os.getenv("ANTHROPIC_API_KEY")
-if not API_KEY:
-    logger.error("CRÍTICO: No se encontró ANTHROPIC_API_KEY en las variables de entorno.")
-    raise ValueError("Falta ANTHROPIC_API_KEY en el archivo .env")
-# Instancia global del cliente
 client = anthropic.Anthropic(api_key=API_KEY)
 #VALIDACIÓN ESTRICTA CON PYDANTIC (El escudo de seguridad)
 # Obligamos a que la respuesta tenga EXACTAMENTE esta forma. 
