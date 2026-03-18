@@ -39,7 +39,7 @@ Este motor lo hace **en menos de 60 segundos.**
 
 ## Demo en vivo
 
-🔗 **[motor-logistico-ai.streamlit.app](https://motor-logistico-ai.streamlit.app)** ← pruébalo con los Excels de ejemplo
+🔗 **[motor-logistico-ai.streamlit.app](https://motor-logistico-ai.streamlit.app/)** ← pruébalo con los Excels de ejemplo
 
 ---
 
@@ -152,7 +152,7 @@ motor-logistico-ai/
 ## Cómo usar el motor
 
 ### Opción A — Demo pública (sin instalar nada)
-Ve a **[motor-logistico-ai.streamlit.app](https://motor-logistico-ai.streamlit.app)** y sube uno de los Excels de prueba de la carpeta `excels_de_prueba/`.
+Ve a **[motor-logistico-ai.streamlit.app](https://motor-logistico-ai.streamlit.app/)** y sube uno de los Excels de prueba de la carpeta `excels_de_prueba/`.
 
 ### Opción B — Instalación local
 
