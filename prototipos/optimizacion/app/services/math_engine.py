@@ -87,14 +87,29 @@ def resolver_ruta_con_horarios(
     routing.AddVariableMinimizedByFinalizer(time_dim.CumulVar(routing.Start(0)))
     routing.AddVariableMinimizedByFinalizer(time_dim.CumulVar(routing.End(0)))
  
+    # Intento 1: PATH_CHEAPEST_ARC — rápido, bueno para rutas simples
     params = pywrapcp.DefaultRoutingSearchParameters()
     params.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC
     params.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
-    params.time_limit.seconds = 10
+    params.time_limit.seconds = 15
  
     solution = routing.SolveWithParameters(params)
+ 
+    # Intento 2: si no encontró, probar con estrategia más exhaustiva
     if not solution:
-        return "No se encontró solución: imposible cumplir todos los horarios.", [], []
+        logger.info("PATH_CHEAPEST_ARC sin solución — reintentando con ALL_UNPERFORMED...")
+        params2 = pywrapcp.DefaultRoutingSearchParameters()
+        params2.first_solution_strategy = routing_enums_pb2.FirstSolutionStrategy.PARALLEL_CHEAPEST_INSERTION
+        params2.local_search_metaheuristic = routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
+        params2.time_limit.seconds = 20
+        solution = routing.SolveWithParameters(params2)
+ 
+    if not solution:
+        return (
+            "No se encontró solución: imposible cumplir todos los horarios con 1 vehículo. "
+            "Sugerencia: amplía las ventanas de tiempo, reduce paradas o divide en 2 corridas.",
+            [], []
+        )
  
     return _formatear_solucion(data, manager, routing, solution, time_dim, nombres_paradas)
  
@@ -177,4 +192,3 @@ def _formatear_solucion(
     texto += f"⏱️  Duración total de la ruta: {duracion_total} min ({duracion_total/60:.1f} h)\n"
  
     return texto, detalle, orden
- 
