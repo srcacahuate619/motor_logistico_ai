@@ -7,7 +7,10 @@ CAMBIOS:
   - Tipo de vehículo: se muestra como 3 botones, sin selección predeterminada
     O se detecta automáticamente del Excel (si todos los pedidos son del mismo tipo)
 """
- 
+import sys
+import os
+# Agrega la carpeta actual al path para que Python encuentre app/core y app/services
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))) 
 import io
 import re
 import logging
